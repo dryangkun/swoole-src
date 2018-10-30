@@ -247,6 +247,7 @@ static int swoole_pgsql_coro_onWrite(swReactor *reactor, swEvent *event)
     // wait the connection ok
     ConnStatusType status =  PQstatus(pg_object->conn);
     if(status != CONNECTION_OK){
+        success = 0;
         PostgresPollingStatusType flag = PGRES_POLLING_WRITING;
         for (;;)
         {
@@ -261,7 +262,6 @@ static int swoole_pgsql_coro_onWrite(swReactor *reactor, swEvent *event)
                 case PGRES_POLLING_FAILED:
                     errMsg = PQerrorMessage(pg_object->conn);
                     swWarn("error:[%s]",errMsg);
-                    success = 0;
                     break;
                 default:
                     break;
@@ -270,13 +270,13 @@ static int swoole_pgsql_coro_onWrite(swReactor *reactor, swEvent *event)
             flag = PQconnectPoll(pg_object->conn);
             if(flag == PGRES_POLLING_OK )
             {
+                success = 1;
                 break;
             }
             if(flag == PGRES_POLLING_FAILED )
             {
                 errMsg = PQerrorMessage(pg_object->conn);
                 swWarn("error:[%s] please cofirm that the connection configuration is correct \n",errMsg);
-                success = 0;
                 break;
             }
         }
