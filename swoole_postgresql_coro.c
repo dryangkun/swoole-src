@@ -424,7 +424,7 @@ static  int query_result_parse(pg_object *pg_object)
             {
                 sw_zval_ptr_dtor(&retval);
             }
-            swoole_postgresql_coro_close(pg_object);
+//            swoole_postgresql_coro_close(pg_object);
             break;
         case PGRES_COMMAND_OK: /* successful command that did not return rows */
         default:
@@ -994,7 +994,7 @@ static int swoole_pgsql_coro_onError(swReactor *reactor, swEvent *event)
     zval *retval = NULL, *result;
     zval *zobject  = pg_object->object;
 
-    swoole_postgresql_coro_close(pg_object);
+//    swoole_postgresql_coro_close(pg_object);
 
     SW_ALLOC_INIT_ZVAL(result);
     ZVAL_BOOL(result, 0);
